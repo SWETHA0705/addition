@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+
+<form id="form">
+  <p>Enter the First Number: <input id="firstnumber"></p>
+  <p>Enter the Second Number: <input id="secondnumber"></p>
+  <button id="submit">Add</button>
+  <p>Sum = <input id="answer" readonly></p>
+</form>
+
+<script>
+  document.getElementById("form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const firstNumber = document.getElementById("firstnumber").value;
+    const secondNumber = document.getElementById("secondnumber").value;
+
+    const formData = {
+      firstnumber: firstNumber,
+      secondnumber: secondNumber
+    };
+
+    fetch("/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json(); // Parse the JSON response
+        } else {
+          throw new Error("Failed to make the request.");
+        }
+      })
+      .then(data => {
+        // Handle the response data here:
+        console.log(data);
+
+        // Update the 'answer' input field with the result
+        document.getElementById("answer").value = ` ${data.data}`;
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+  });
+</script>
+
+</body>
+</html>
